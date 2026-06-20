@@ -1,0 +1,10 @@
+Loop Full Live Test - 2026-06-19T10:30:48+00:00
+PASS: 23 / 29
+
+FAILED:
+  - AI summary
+  - Get contact timeline
+  - AI summary endpoint
+  - Inngest endpoint
+  - Approvals send
+  - Setup schema
