@@ -12,10 +12,18 @@ const MAX_AGE_SECONDS = 60 * 60 * 8;
 
 export function currentRoleFromCookies(): Role | null {
   const raw = cookies().get(COOKIE)?.value;
-  // Hackathon mode: no cookie → treat as admin so judges can use the demo
-  // without signing up. The /gate page still exists for explicit role switching.
-  const v: string | null = raw ?? "admin";
-  return isRole(v) ? v : null;
+  if (!raw) return null;
+  return isRole(raw) ? raw : null;
+}
+
+/**
+ * Hackathon convenience: for non-gated pages (landing, docs) we want to
+ * know the current role for display. If no cookie is set, return "admin"
+ * as the display default. NEVER use this for authorization decisions —
+ * use currentRoleFromCookies() for that, and redirect to /gate if null.
+ */
+export function currentRoleForDisplay(): Role {
+  return currentRoleFromCookies() ?? "admin";
 }
 
 export function setRoleCookie(role: Role) {

@@ -7,4 +7,4 @@
 
 export type { Role } from "./auth-types";
 export { ROLE_LABEL } from "./auth-types";
-export { currentRoleFromCookies, setRoleCookie, clearRoleCookie } from "./auth-server";
+export { currentRoleFromCookies, currentRoleForDisplay, setRoleCookie, clearRoleCookie } from "./auth-server";

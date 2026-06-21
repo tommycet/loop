@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { AppSidebar } from "./AppSidebar";
+import { RoleMenu } from "./RoleMenu";
+import type { Role } from "../lib/auth-client";
 
 export function AppShell({
   role,
@@ -13,7 +15,7 @@ export function AppShell({
   title,
   subtitle,
 }: {
-  role: string;
+  role: Role | string;
   children: ReactNode;
   title?: string;
   subtitle?: string;
@@ -41,9 +43,7 @@ export function AppShell({
               >
                 Docs
               </Link>
-              <div className="h-9 w-9 rounded-full bg-[color:var(--brand-cyan-soft)] flex items-center justify-center font-mono text-xs font-semibold uppercase text-[color:var(--brand-cyan)]">
-                {role.slice(0, 2)}
-              </div>
+              <RoleMenu role={role as Role} />
             </div>
           </div>
         </header>

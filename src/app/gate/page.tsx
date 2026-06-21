@@ -9,18 +9,31 @@ export const dynamic = "force-dynamic";
 export default function GatePage({
   searchParams,
 }: {
-  searchParams: { error?: string; role?: string; redirect?: string; denied?: string; needs?: string };
+  searchParams: {
+    error?: string;
+    role?: string;
+    redirect?: string;
+    denied?: string;
+    needs?: string;
+    switch?: string;
+    signed_out?: string;
+  };
 }) {
-  // If already signed in, bounce them into the dashboard.
   const current = currentRoleFromCookies();
-  if (current && !searchParams.denied) {
+
+  // If already signed in, bounce them into the dashboard — UNLESS they're
+  // explicitly switching roles (via the role menu), were denied access to
+  // a higher-privilege page, or just signed out.
+  if (current && !searchParams.denied && !searchParams.switch && !searchParams.signed_out) {
     redirect(searchParams.redirect || "/app");
   }
 
-  const presetRole = searchParams.role || "admin";
+  const presetRole = searchParams.role || (current ?? "admin");
   const hasError = searchParams.error === "1";
   const deniedFrom = searchParams.denied;
   const requiredRoles = (searchParams.needs || "").split(",").filter(Boolean);
+  const isSwitching = searchParams.switch === "1";
+  const wasSignedOut = searchParams.signed_out === "1";
 
   return (
     <div className="min-h-screen bg-[color:var(--ink-base)] text-fg-primary">
@@ -35,13 +48,27 @@ export default function GatePage({
           <h1 className="text-3xl font-semibold tracking-tight">
             {deniedFrom
               ? "This page requires a higher-privilege role."
-              : "Sign in to continue"}
+              : isSwitching
+                ? "Switch role"
+                : wasSignedOut
+                  ? "Signed out"
+                  : "Sign in to continue"}
           </h1>
           <p className="mt-3 text-sm leading-6 text-fg-secondary">
             {deniedFrom
               ? `You're signed in as ${deniedFrom}. This page needs ${requiredRoles.join(" or ")} access.`
-              : "The Commitment Control Plane uses a role gate to keep risky actions out of the wrong hands. Pick the role you want to demo and enter the demo password."}
+              : isSwitching && current
+                ? `Currently signed in as ${current}. Pick a different role to continue.`
+                : wasSignedOut
+                  ? "You've been signed out. Pick a role to sign back in."
+                  : "The Commitment Control Plane uses a role gate to keep risky actions out of the wrong hands. Pick the role you want to demo and enter the demo password."}
           </p>
+
+          {wasSignedOut && (
+            <div className="mt-6 rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-4 text-sm text-emerald-200">
+              Signed out. Your session cookie has been cleared.
+            </div>
+          )}
 
           {hasError && (
             <div className="mt-6 rounded-xl border border-rose-400/30 bg-rose-400/10 p-4 text-sm text-rose-200">
