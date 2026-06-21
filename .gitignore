@@ -68,3 +68,31 @@ docs/_build/
 # misc
 .cache/
 .turbo/
+
+# ─── safety: secrets / credentials (NEVER commit) ───
+.env
+.env.*
+!.env.example
+!.env.local.example
+*.key
+*.pem
+*.p12
+*.pfx
+keystores/
+wallet.json
+mnemonic*
+*PRIVATE*
+*private_key*
+.secrets/
+
+# python build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# agent / browser state
+.agent-browser/
+.agent-reach/
+.camoufox/
